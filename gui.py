@@ -53,7 +53,7 @@ def thread_function(name):
     PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0', 8820))
+    server_socket.bind((PORT, 8820))
     global username
     while True:
 
