@@ -49,7 +49,7 @@ mylist = Listbox(r, yscrollcommand = scroll.set )
 
 def thread_function(name):
     logging.info("Thread %s: starting", name)
-    HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
+    HOST = "128.206.19.255"  # Standard loopback interface address (localhost)
     PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
     server_socket = socket.socket()
