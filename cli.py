@@ -1,13 +1,14 @@
 import socket
 import time
 
-UDP_IP = "127.0.0.1" # set it to destination IP.. RPi in this case
+UDP_IP = "128.206.19.255" # set it to destination IP.. RPi in this case
 UDP_PORT = 12345
 
 print("UDP target IP:", UDP_IP)
 print("UDP target port:", UDP_PORT)
 
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 while True:
   print("Turn ON")
