@@ -1,6 +1,6 @@
 import socket
 my_socket = socket.socket()
-my_socket.connect(("128.206.19.255", 8820))
+my_socket.connect(("0.0.0.0", 8820))
 message = input('Enter some data: ')
 my_socket.send(message.encode("utf-8"))
 response_data = my_socket.recv(1024)
