@@ -6,10 +6,8 @@ import time
 
 
 # signupR = Tk()
-name = ''
 username = 'by'
-
-selectedConvo = None
+selectedConvo = ''
 convos = {}
 
 
@@ -45,6 +43,14 @@ scroll = Scrollbar(r)
 scroll2 = Scrollbar(r)
 msgs = Listbox(r, yscrollcommand = scroll2.set ) 
 mylist = Listbox(r, yscrollcommand = scroll.set ) 
+msgs.config(width=60,height=10)
+
+def OnSelect(event):
+    global selectedConvo
+    selectedConvo = event.widget.get(event.widget.curselection()[0])
+    msgs.delete(0,'end')
+    for msg in convos[selectedConvo]:
+        msgs.insert(END,msg)
 
 
 def thread_function(name):
@@ -53,8 +59,10 @@ def thread_function(name):
     PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
     server_socket = socket.socket()
-    server_socket.bind(("0.0.0.0", 8820))
+    server_socket.bind(("127.0.0.1", 8820))
     global username
+    global selectedConvo
+
     while True:
 
         server_socket.listen(1)
@@ -78,21 +86,24 @@ def thread_function(name):
                 except:
                     convos[recip] = [msg]
                     mylist.insert(END,recip)
-                msgs.insert(END, msg)
+                    mylist.bind("<<ListboxSelect>>", OnSelect)
+                if ((recip == selectedConvo) or (selectedConvo == '')):
+                    selectedConvo = recip
+                    msgs.insert(END, msg)
             if recip == username: # just recieved message 
                 try:
                     convos[sender].append(msg)
                 except:
                     convos[sender] = [msg]
                     mylist.insert(END,sender)
-                if selectedConvo == sender or (selectedConvo is None):
+                    mylist.bind("<<ListboxSelect>>", OnSelect)
+                if selectedConvo == sender or (selectedConvo == ''):
                     selectedConvo = sender
                     msgs.insert(msg)
         except:
             continue
 
                 
-
 
 
 
@@ -107,12 +118,8 @@ def msg_ui():
     scroll.config( command = mylist.yview) 
     msgs.grid(row=1, column=2,) 
    
-    def OnSelect(event):
-        selectedConvo = event.widget.get(event.widget.curselection()[0])
-        name = selectedConvo
-        msgs.delete(0,'end')
-        for msg in convos[selectedConvo]:
-            msgs.insert(END,msg)
+
+    
         
     def create_convo():
         rname = recipNameEntry.get()
@@ -133,9 +140,13 @@ def msg_ui():
 
     createConvoBtn = Button(r, text='Create Convo', width=10, command=create_convo)
     createConvoBtn.grid(row=3,column=1)
-    sendBtn = Button(r, text='Send', width=25, command=create_convo) 
-    e1 = Entry(r) 
-    e1.grid(row=2, column=2) 
+    msgEntry = Entry(r) 
+    msgEntry.grid(row=2, column=2) 
+    def sendMsg():
+        msg = msgEntry.get()
+        print(msg)
+
+    sendBtn = Button(r, text='Send', width=25, command=sendMsg) 
     sendBtn.grid(row=3, column=2) 
 
 
