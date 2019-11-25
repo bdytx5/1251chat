@@ -3,11 +3,15 @@ import socket
 import logging
 import threading
 import time
+import sys
 
-msgSocket = socket.socket()
-
-server_socket = socket.socket()
-server_socket.bind(("127.0.0.1", 8820))
+try:
+    PORT = int(sys.argv[1])
+except:
+    PORT = 8820
+msgSocket = socket.socket() # for sending messages 
+server_socket = socket.socket() # for recieving messages 
+server_socket.bind(("127.0.0.1", PORT)) 
 
 
 #msgSocket.bind(('<LAN/Local IP address>', 8000))
@@ -17,12 +21,12 @@ server_socket.bind(("127.0.0.1", 8820))
 # sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 # sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-# signupR = Tk()
 username = 'by'
 selectedConvo = ''
 convos = {}
 
 
+# signupR = Tk()
 # def signupPage():  
     
 #     signupR.title('1251 Chat') 
@@ -38,10 +42,6 @@ convos = {}
 #     label.grid(row=1,column=1)
 #     signUpBtn = Button(signupR, text='Create Convo', width=10, command=setName)
 #     signUpBtn.grid(row=3, column=1) 
-
-
-
-    
 
 # signupPage()
 # signupR.mainloop() 
@@ -69,17 +69,12 @@ def thread_function(name):
     logging.info("Thread %s: starting", name)
     HOST = "128.206.19.255"  # Standard loopback interface address (localhost)
     PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
-
-
     global username
     global selectedConvo
     server_socket.listen(1)
     (client_socket, client_address) = server_socket.accept()
 
     while True:
-        
-
-
         client_data = client_socket.recvfrom(1024)
         print("Received: %s" % client_data[0].decode("utf-8"))
         msg = client_data[0].decode("utf-8")
@@ -123,16 +118,13 @@ def thread_function(name):
 
 
 def msg_ui():
-    r.title('1251 Chat') 
+    r.title('piMessage') 
     mylist.grid(row=1, column=1,)
     recipNameEntry = Entry(r) 
     recipNameEntry.grid(row=2, column=1) 
     scroll.config( command = mylist.yview) 
     msgs.grid(row=1, column=2,) 
-   
 
-    
-        
     def create_convo():
         global selectedConvo
         rname = recipNameEntry.get()
@@ -160,6 +152,7 @@ def msg_ui():
 
 
     def sendMsg():
+        global PORT
         global selectedConvo
         msg = msgEntry.get()
         msgEntry.delete(0, 'end')
@@ -169,15 +162,12 @@ def msg_ui():
                 msgSocket.send(encodedMsg.encode("utf-8"))
             except:
                 try:
-                     msgSocket.connect(("127.0.0.1", 8820))
+                     msgSocket.connect(("127.0.0.1", PORT))
                      msgSocket.send(encodedMsg.encode("utf-8"))
                 except:
                     print('error')
         # FOR PI
-
-    # sock.sendto(b'LED=0\n', (UDP_IP, UDP_PORT))
-        
-        print(msg)
+        # sock.sendto(b'LED=0\n', (UDP_IP, UDP_PORT))
 
     sendBtn = Button(r, text='Send', width=25, command=sendMsg) 
     sendBtn.grid(row=3, column=2) 
@@ -186,12 +176,10 @@ def msg_ui():
 
 
 def uiThread():
-    # need to recieve from pipe ! (in thread)
     format = "%(asctime)s: %(message)s"
     logging.basicConfig(format=format, level=logging.INFO,
     datefmt="%H:%M:%S") 
     logging.info("Main    : before creating thread")
-   
     x = threading.Thread(target=thread_function, args=(1,))
     logging.info("Main: before running thread")
     x.start()
@@ -200,14 +188,6 @@ def uiThread():
 
 
 
-
-
 msg_ui()
-
-
-
-
-
-
 uiThread()
 r.mainloop() 
