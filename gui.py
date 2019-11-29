@@ -5,13 +5,17 @@ import threading
 import time
 import sys
 
+
+
+
+
 try:
     PORT = int(sys.argv[1])
 except:
     PORT = 8820
 msgSocket = socket.socket() # for sending messages 
 server_socket = socket.socket() # for recieving messages 
-server_socket.bind(("127.0.0.1", PORT)) 
+server_socket.bind(("0.0.0.0", PORT)) 
 
 
 #msgSocket.bind(('<LAN/Local IP address>', 8000))
@@ -22,9 +26,9 @@ server_socket.bind(("127.0.0.1", PORT))
 # sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 username = 'by'
-selectedConvo = ''
+selectedConvo = '1251'
 convos = {}
-
+convos['1251'] = ['1251 Class Chat']
 
 # signupR = Tk()
 # def signupPage():  
@@ -55,7 +59,9 @@ scroll = Scrollbar(r)
 scroll2 = Scrollbar(r)
 msgs = Listbox(r, yscrollcommand = scroll2.set ) 
 mylist = Listbox(r, yscrollcommand = scroll.set ) 
+mylist.insert(END, '1251')
 msgs.config(width=60,height=10)
+msgs.insert(END, '1251 Class Chat')
 
 def OnSelect(event):
     global selectedConvo
@@ -87,7 +93,8 @@ def thread_function(name):
             sender = msg.split('-')[0]
             recip = msg.split('-')[1]
             msg = msg[(len(sender)+len(recip)+2):len(msg)]
-            if sender == username: # just sent message 
+            msg = '{}: {}'.format(sender, msg)
+            if sender == username or recip == '1251': # just sent message 
                 try:
                     convos[recip].append(msg)
                 except:
@@ -106,8 +113,9 @@ def thread_function(name):
                     mylist.bind("<<ListboxSelect>>", OnSelect)
                 if selectedConvo == sender or (selectedConvo == ''):
                     selectedConvo = sender
-                    msgs.insert(msg)
+                    msgs.insert(END, msg)
         except:
+            (client_socket, client_address) = server_socket.accept()
             continue
 
                 
@@ -167,7 +175,7 @@ def msg_ui():
                 except:
                     print('error')
         # FOR PI
-        # sock.sendto(b'LED=0\n', (UDP_IP, UDP_PORT))
+        # sock.sendto(b'LED=0\n', (UDP_IP, PORT))
 
     sendBtn = Button(r, text='Send', width=25, command=sendMsg) 
     sendBtn.grid(row=3, column=2) 
