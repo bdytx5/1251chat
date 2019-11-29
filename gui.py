@@ -4,6 +4,7 @@ import logging
 import threading
 import time
 import sys
+import os
 
 
 
@@ -13,10 +14,14 @@ try:
     PORT = int(sys.argv[1])
 except:
     PORT = 8820
-msgSocket = socket.socket() # for sending messages 
-server_socket = socket.socket() # for recieving messages 
-server_socket.bind(("0.0.0.0", PORT)) 
 
+UDP_IP = "192.168.1.255" # set it to destination IP.. RPi in this case
+# msgSocket = socket.socket() # for sending messages 
+server_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+server_socket.bind(("0.0.0.0", PORT))
+
+msgSocket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+msgSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 #msgSocket.bind(('<LAN/Local IP address>', 8000))
 # for pi
@@ -63,6 +68,29 @@ mylist.insert(END, '1251')
 msgs.config(width=60,height=10)
 msgs.insert(END, '1251 Class Chat')
 
+
+
+chkValue = BooleanVar() 
+chkValue.set(True)
+ 
+chkExample = Checkbutton(r, text='Sound On', var=chkValue) 
+chkExample.grid(column=1, row=4)
+
+def playSoundAndLight(): 
+    os.system("gcc wpi.c -l wiringPi")
+    os.system("./a.out")
+
+def showLight(): 
+    os.system("gcc wpi.c -l wiringPi")
+    os.system("./a.out")
+
+def newNotification():
+    sounds = chkValue.get()
+    if sounds:
+        playSoundAndLight()
+    else:
+        showLight()
+
 def OnSelect(event):
     global selectedConvo
     selectedConvo = event.widget.get(event.widget.curselection()[0])
@@ -77,11 +105,11 @@ def thread_function(name):
     PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
     global username
     global selectedConvo
-    server_socket.listen(1)
-    (client_socket, client_address) = server_socket.accept()
+    # server_socket.listen(1)
+    # (client_socket, client_address) = server_socket.accept()
 
     while True:
-        client_data = client_socket.recvfrom(1024)
+        client_data = server_socket.recvfrom(1024)
         print("Received: %s" % client_data[0].decode("utf-8"))
         msg = client_data[0].decode("utf-8")
         if msg == '!':
@@ -95,6 +123,11 @@ def thread_function(name):
             msg = msg[(len(sender)+len(recip)+2):len(msg)]
             msg = '{}: {}'.format(sender, msg)
             if sender == username or recip == '1251': # just sent message 
+                if sender != username: # for group Msg
+                    print('play sound')
+                    newNotification()
+
+
                 try:
                     convos[recip].append(msg)
                 except:
@@ -104,7 +137,8 @@ def thread_function(name):
                 if ((recip == selectedConvo) or (selectedConvo == '')):
                     selectedConvo = recip
                     msgs.insert(END, msg)
-            if recip == username: # just recieved message 
+            if recip == username: # just recieved message
+                #newNotification()
                 try:
                     convos[sender].append(msg)
                 except:
@@ -115,7 +149,7 @@ def thread_function(name):
                     selectedConvo = sender
                     msgs.insert(END, msg)
         except:
-            (client_socket, client_address) = server_socket.accept()
+            # (client_socket, client_address) = server_socket.accept()
             continue
 
                 
@@ -167,11 +201,12 @@ def msg_ui():
         if selectedConvo != '' and username != '':
             encodedMsg = '{}-{}-{}'.format(username,selectedConvo,msg)
             try:
-                msgSocket.send(encodedMsg.encode("utf-8"))
+                msgSocket.sendto(encodedMsg.encode("utf-8"), (UDP_IP, PORT))
+                # msgSocket.send(encodedMsg.encode("utf-8"))
             except:
                 try:
-                     msgSocket.connect(("127.0.0.1", PORT))
-                     msgSocket.send(encodedMsg.encode("utf-8"))
+                    #msgSocket.connect(("127.0.0.1", PORT))
+                    msgSocket.sendto(encodedMsg.encode("utf-8"), (UDP_IP, PORT))
                 except:
                     print('error')
         # FOR PI

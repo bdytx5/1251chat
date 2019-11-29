@@ -2,7 +2,7 @@ import socket
 import time
 
 UDP_IP = "192.168.1.255" # set it to destination IP.. RPi in this case
-UDP_PORT = 12345
+UDP_PORT = 8820
 
 print("UDP target IP:", UDP_IP)
 print("UDP target port:", UDP_PORT)
@@ -12,8 +12,8 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 while True:
   print("Turn ON")
-  sock.sendto(b'LED=1\n', (UDP_IP, UDP_PORT))
+  sock.sendto(b'roy-by-ffdljkdfdf', (UDP_IP, UDP_PORT))
   time.sleep(2)
   print("Turn OFF")
-  sock.sendto(b'LED=0\n', (UDP_IP, UDP_PORT))
+  sock.sendto(b'by-roy-sdsdsddssdsdsdsd', (UDP_IP, UDP_PORT))
   time.sleep(2)
