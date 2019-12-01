@@ -15,7 +15,7 @@ try:
 except:
     PORT = 8820
 
-UDP_IP = "192.168.1.255" # set it to destination IP.. RPi in this case
+UDP_IP = "128.206.19.255" # set it to destination IP.. RPi in this case
 # msgSocket = socket.socket() # for sending messages 
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 server_socket.bind(("0.0.0.0", PORT))
@@ -81,7 +81,7 @@ def playSoundAndLight():
     os.system("./a.out")
 
 def showLight(): 
-    os.system("gcc wpi.c -l wiringPi")
+    os.system("gcc wpiNoSound.c -l wiringPi")
     os.system("./a.out")
 
 def newNotification():
@@ -124,7 +124,6 @@ def thread_function(name):
             msg = '{}: {}'.format(sender, msg)
             if sender == username or recip == '1251': # just sent message 
                 if sender != username: # for group Msg
-                    print('play sound')
                     newNotification()
 
 
@@ -138,7 +137,7 @@ def thread_function(name):
                     selectedConvo = recip
                     msgs.insert(END, msg)
             if recip == username: # just recieved message
-                #newNotification()
+                newNotification()
                 try:
                     convos[sender].append(msg)
                 except:

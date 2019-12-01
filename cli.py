@@ -1,7 +1,7 @@
 import socket
 import time
 
-UDP_IP = "192.168.1.255" # set it to destination IP.. RPi in this case
+UDP_IP = "128.206.19.255" # set it to destination IP.. RPi in this case
 UDP_PORT = 8820
 
 print("UDP target IP:", UDP_IP)

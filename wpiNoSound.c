@@ -16,18 +16,18 @@ int main()
         digitalWrite (4,1); // initially on
 
 
-	digitalWrite (5,0); // initially off 
+	digitalWrite (5,0); // initially on 
 	pinMode (6, OUTPUT) ;//SPKR
     int freq = 300;
     int i = 0;
     while(i<1000){
-        digitalWrite (6,1); // turn on spkr
+        // digitalWrite (6,1); // turn on spkr
         i++;
         usleep(freq);
-        digitalWrite (6,0); // shut off spkr
+        // digitalWrite (6,0); // shut off spkr
 	usleep(freq);    
 }
-    digitalWrite (6,0); // shut off 
+    // digitalWrite (6,0); // shut off 
 	digitalWrite (4,0); // shut off 
 
    printf("done");
