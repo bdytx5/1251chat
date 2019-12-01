@@ -35,25 +35,25 @@ selectedConvo = '1251'
 convos = {}
 convos['1251'] = ['1251 Class Chat']
 
-# signupR = Tk()
-# def signupPage():  
+signupR = Tk()
+def signupPage():  
     
-#     signupR.title('1251 Chat') 
-#     e1 = Entry(signupR) 
-#     e1.grid(row=2, column=1) 
-#     def setName():
-#         global username
-#         n = e1.get()
-#         if n != '':
-#             username = e1.get()
-#             signupR.destroy()
-#     label = Label(signupR, text="Enter your name to chat!")
-#     label.grid(row=1,column=1)
-#     signUpBtn = Button(signupR, text='Create Convo', width=10, command=setName)
-#     signUpBtn.grid(row=3, column=1) 
+    signupR.title('1251 Chat') 
+    e1 = Entry(signupR) 
+    e1.grid(row=2, column=1) 
+    def setName():
+        global username
+        n = e1.get()
+        if n != '':
+            username = e1.get()
+            signupR.destroy()
+    label = Label(signupR, text="Enter your name to chat!")
+    label.grid(row=1,column=1)
+    signUpBtn = Button(signupR, text='Create Convo', width=10, command=setName)
+    signUpBtn.grid(row=3, column=1) 
 
-# signupPage()
-# signupR.mainloop() 
+signupPage()
+signupR.mainloop() 
 
 
 
