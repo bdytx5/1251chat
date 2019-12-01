@@ -110,7 +110,6 @@ def thread_function(name):
 
     while True:
         client_data = server_socket.recvfrom(1024)
-        print("Received: %s" % client_data[0].decode("utf-8"))
         msg = client_data[0].decode("utf-8")
         if msg == '!':
             print("done")
